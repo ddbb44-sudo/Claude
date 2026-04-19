@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الدليل الشامل لبناء المهارات في Claude</title>
+    
+    <!-- خطوط IBM Plex Sans Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- إطار Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- إعدادات Tailwind المخصصة -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"IBM Plex Sans Arabic"', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#FAF9F6', 
+                            text: '#1F1E1B', 
+                            accent: '#D97757', 
+                            border: '#E8E6E1',
+                            surface: '#FFFFFF',
+                            muted: '#6B6A66'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: theme('colors.brand.bg');
+            color: theme('colors.brand.text');
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            color: theme('colors.brand.text');
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* تنسيق الأكواد البرمجية */
+        pre {
+            background-color: #1a1a1a;
+            color: #f4f4f4;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 0.5rem 0 1.5rem 0;
+            font-size: 0.85rem;
+            font-family: theme('fontFamily.mono');
+            border: 1px solid #333;
+            max-width: 100%;
+            white-space: pre-wrap; /* التفاف النص لمنع خروجه عن الشاشة بالجوال */
+            word-wrap: break-word;
+        }
+        
+        pre[dir="ltr"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        pre[dir="rtl"] {
+            direction: rtl;
+            text-align: right;
+        }
+        
+        code {
+            font-family: theme('fontFamily.mono');
+            background-color: #f1efeb;
+            color: #bd4b4b;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            display: inline-block;
+            word-break: break-word;
+        }
+
+        code[dir="ltr"] {
+            direction: ltr;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 1em;
+            word-break: normal;
+        }
+
+        .bilingual-block {
+            background-color: theme('colors.brand.surface');
+            border: 1px solid theme('colors.brand.border');
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box {
+            background-color: theme('colors.brand.surface');
+            border: 1px solid theme('colors.brand.border');
+            border-right: 4px solid theme('colors.brand.muted');
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .example-good {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-right: 4px solid #22c55e;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            overflow-x: hidden;
+        }
+
+        .example-bad {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-right: 4px solid #ef4444;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            overflow-x: hidden;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: theme('colors.brand.muted');
+            text-decoration: none;
+            transition: all 0.2s;
+            border-right: 2px solid transparent;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            color: theme('colors.brand.text');
+            border-right-color: theme('colors.brand.text');
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        ul, ol {
+            padding-inline-start: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        ul { list-style-type: disc; }
+        ol { list-style-type: decimal; }
+        li { margin-bottom: 0.5rem; }
+        html { scroll-behavior: smooth; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: theme('colors.brand.bg'); }
+        ::-webkit-scrollbar-thumb { background: #d1d0cb; border-radius: 3px; }
+
+        @media (max-width: 1024px) {
+            .sidebar-open { transform: translateX(0%); }
+            .sidebar-closed { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="flex flex-col lg:flex-row min-h-screen">
+
+    <!-- زر القائمة للجوال -->
+    <button id="menu-btn" class="lg:hidden fixed top-4 right-4 z-50 bg-white p-3 rounded-md shadow-md text-gray-700 border border-gray-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+
+    <!-- شريط التنقل الجانبي -->
+    <aside id="sidebar" class="sidebar-closed lg:translate-x-0 fixed lg:sticky top-0 right-0 h-screen w-72 max-w-[80vw] bg-brand-bg border-l border-brand-border overflow-y-auto transition-transform duration-300 ease-in-out z-40">
+        <div class="p-6 lg:p-8">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-xl font-bold tracking-tight">Anthropic <span class="font-light">Claude</span></h2>
+                    <p class="text-xs text-brand-muted mt-1 uppercase tracking-wider">دليل المهارات</p>
+                </div>
+                <button id="close-menu-btn" class="lg:hidden text-gray-500 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <nav class="space-y-1">
+                <a href="#intro" class="sidebar-link active">مقدمة</a>
+                <a href="#chapter-1" class="sidebar-link">الفصل الأول: الأساسيات</a>
+                <a href="#chapter-2" class="sidebar-link">الفصل الثاني: التخطيط والتصميم</a>
+                <a href="#chapter-3" class="sidebar-link">الفصل الثالث: الاختبار والتطوير</a>
+                <a href="#chapter-4" class="sidebar-link">الفصل الرابع: التوزيع والمشاركة</a>
+                <a href="#chapter-5" class="sidebar-link">الفصل الخامس: الأنماط الشائعة</a>
+                <a href="#chapter-6" class="sidebar-link">الفصل السادس: الموارد والمراجع</a>
+                <a href="#appendix-a" class="sidebar-link pr-4 lg:pr-8">المرجع أ: قائمة التدقيق</a>
+                <a href="#appendix-b" class="sidebar-link pr-4 lg:pr-8">المرجع ب: مقدمة YAML</a>
+                <a href="#appendix-c" class="sidebar-link pr-4 lg:pr-8">المرجع ج: أمثلة مهارات</a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- خلفية تظليل للجوال -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-1 w-full overflow-x-hidden max-w-full lg:max-w-4xl mx-auto px-5 py-16 lg:px-16 lg:py-20">
+        
+        <header class="mb-12 border-b border-brand-border pb-8 text-center lg:text-right pt-4 lg:pt-0">
+            <p class="text-brand-accent font-medium mb-3 tracking-wide text-sm lg:text-base">الدليل الشامل</p>
+            <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-brand-text leading-tight">لبناء المهارات<br>في Claude</h1>
+            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-3 text-brand-muted text-xs lg:text-sm">
+                <span class="bg-brand-surface border border-brand-border px-3 py-1 rounded-full">المصدر: Anthropic</span>
+            </div>
+        </header>
+
+        <!-- مقدمة -->
+        <section id="intro" class="mb-16 scroll-mt-20">
+            <h2 class="text-2xl lg:text-3xl font-bold mb-4">مقدمة</h2>
+            <p class="text-base lg:text-lg mb-4">المهارة (Skill) هي مجموعة من التعليمات — مُعبَّأة في مجلد بسيط — تُعلِّم كلود كيف يتعامل مع مهام أو سير عمل محددة. تُعدّ المهارات من أقوى الأدوات لتخصيص كلود وفق احتياجاتك الخاصة. فبدلاً من إعادة شرح تفضيلاتك وعملياتك وخبراتك في كل محادثة، تتيح لك المهارات تعليم كلود مرة واحدة والاستفادة منها في كل مرة.</p>
+            
+            <p class="text-base lg:text-lg mb-4">تبلغ المهارات أقصى قيمتها حين يكون لديك سير عمل متكرر: توليد تصميمات واجهة أمامية من المواصفات، أو إجراء أبحاث بمنهجية ثابتة، أو إنشاء وثائق تتبع دليل الأسلوب الخاص بفريقك، أو تنسيق عمليات متعددة الخطوات. كذلك تعمل المهارات بانسجام تام مع القدرات المدمجة في كلود، كتنفيذ الأكواد وإنشاء المستندات. أما لمن يبنون تكاملات MCP، فإن المهارات تضيف طبقة إضافية فعّالة تحوّل وصول الأدوات الخام إلى سير عمل موثوقة ومحسَّنة.</p>
+            
+            <p class="text-base lg:text-lg mb-6">يغطي هذا الدليل كل ما تحتاج إلى معرفته لبناء مهارات فعّالة — من التخطيط والبنية وحتى الاختبار والتوزيع. سواء كنت تبني مهارة لنفسك أو لفريقك أو للمجتمع الأوسع، ستجد أنماطاً عملية وأمثلة من الواقع في كل فصل.</p>
+
+            <div class="grid md:grid-cols-2 gap-6 my-8">
+                <div class="info-box m-0">
+                    <h3 class="text-lg lg:text-xl font-bold mb-3">ما الذي ستتعلمه:</h3>
+                    <ul class="mb-0 text-sm lg:text-base text-brand-muted">
+                        <li>المتطلبات التقنية وأفضل الممارسات لبنية المهارة</li>
+                        <li>أنماط للمهارات المستقلة وسير عمل MCP المحسَّنة</li>
+                        <li>الأنماط التي أثبتت نجاحها عبر حالات استخدام مختلفة</li>
+                        <li>كيف تختبر مهاراتك وتُطوِّرها وتوزِّعها</li>
+                    </ul>
+                </div>
+                <div class="info-box m-0">
+                    <h3 class="text-lg lg:text-xl font-bold mb-3">الجمهور المستهدف:</h3>
+                    <ul class="mb-0 text-sm lg:text-base text-brand-muted">
+                        <li>المطورون الذين يريدون أن يلتزم كلود بسير عمل محددة باستمرار</li>
+                        <li>المستخدمون المتقدمون الراغبون في توجيه كلود نحو سير عمل بعينها</li>
+                        <li>الفرق التي تسعى إلى توحيد أسلوب عمل كلود عبر مؤسستها</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">مسارَان لقراءة هذا الدليل</h3>
+            <p class="text-base lg:text-lg mb-6">هل تبني مهارات مستقلة؟ ركّز على الأساسيات والتخطيط والتصميم والفئتين 1 و2. هل تعزز تكامل MCP؟ فقسم "المهارات + MCP" والفئة 3 موجّهان لك تحديداً. كلا المسارين يشتركان في نفس المتطلبات التقنية، لكنك تختار ما يناسب حالتك.</p>
+            
+            <div class="bg-brand-surface p-5 rounded-lg border border-brand-border mb-6 text-sm lg:text-base">
+                <h4 class="font-bold mb-2">ما الذي ستخرج به من هذا الدليل:</h4>
+                <p class="mb-0">بنهاية الدليل ستكون قادراً على بناء مهارة كاملة وظيفية في جلسة واحدة. توقع أن تستغرق ما بين 15 و30 دقيقة لبناء مهارتك الأولى العاملة واختبارها باستخدام أداة <code dir="ltr">skill-creator</code>.</p>
+            </div>
+            
+            <p class="text-lg font-medium">لنبدأ.</p>
+        </section>
+
+        <!-- الفصل الأول -->
+        <section id="chapter-1" class="mb-16 scroll-mt-20">
+            <p class="text-brand-accent font-medium mb-1 text-sm">الفصل الأول</p>
+            <h2 class="text-2xl lg:text-3xl font-bold mb-6">الأساسيات</h2>
+            
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">ما هي المهارة؟</h3>
+            <p class="mb-3 text-sm lg:text-base">المهارة عبارة عن مجلد يحتوي على:</p>
+            <ul class="space-y-2 mb-6 text-sm lg:text-base">
+                <li><code dir="ltr">SKILL.md</code> <strong>(مطلوب)</strong>: تعليمات بصيغة Markdown مع مقدمة YAML</li>
+                <li><code dir="ltr">scripts/</code> <strong>(اختياري)</strong>: أكواد قابلة للتنفيذ (Python وBash وغيرها)</li>
+                <li><code dir="ltr">references/</code> <strong>(اختياري)</strong>: توثيق يُحمَّل عند الحاجة</li>
+                <li><code dir="ltr">assets/</code> <strong>(اختياري)</strong>: قوالب وخطوط وأيقونات تُستخدم في المخرجات</li>
+            </ul>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">مبادئ التصميم الأساسية</h3>
+            
+            <h4 class="text-lg font-bold mb-2">الإفصاح التدريجي (Progressive Disclosure)</h4>
+            <p class="mb-3 text-sm lg:text-base">تعتمد المهارات على نظام ثلاثي المستويات:</p>
+            <ul class="space-y-2 mb-6 text-sm lg:text-base">
+                <li><strong>المستوى الأول (مقدمة YAML):</strong> يُحمَّل دائماً في نظام كلود. يوفر القدر الكافي من المعلومات ليعرف كلود متى ينبغي استخدام كل مهارة، دون تحميل كل شيء في السياق.</li>
+                <li><strong>المستوى الثاني (نص SKILL.md):</strong> يُحمَّل حين يرى كلود أن المهارة ذات صلة بالمهمة الحالية. يتضمن التعليمات الكاملة والتوجيهات التفصيلية.</li>
+                <li><strong>المستوى الثالث (الملفات المرتبطة):</strong> ملفات إضافية مضمّنة في مجلد المهارة يمكن لكلود التنقل فيها واكتشافها عند الحاجة فحسب.</li>
+            </ul>
+            <p class="mb-6 text-sm lg:text-base">يُقلِّل هذا الإفصاح التدريجي من استهلاك الرموز (tokens) مع الحفاظ على الخبرة المتخصصة.</p>
+
+            <h4 class="text-lg font-bold mb-2">قابلية التركيب (Composability)</h4>
+            <p class="mb-6 text-sm lg:text-base">يستطيع كلود تحميل مهارات متعددة في آن واحد. لذا ينبغي أن تعمل مهارتك بانسجام مع غيرها من المهارات، ولا تفترض أنها القدرة الوحيدة المتاحة.</p>
+
+            <h4 class="text-lg font-bold mb-2">قابلية النقل (Portability)</h4>
+            <p class="mb-8 text-sm lg:text-base">تعمل المهارات بطريقة متطابقة عبر Claude.ai وClaude Code والـ API. أنشئ مهارتك مرة واحدة وستعمل على جميع المنصات دون تعديل، شريطة أن تدعم البيئة أي متطلبات تعتمد عليها المهارة.</p>
+
+            <div class="border-t border-brand-border pt-8">
+                <h3 class="text-xl lg:text-2xl font-bold mb-4">لمطوري MCP: المهارات + الموصِّلات</h3>
+                
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-md mb-6 flex items-start gap-3 text-sm lg:text-base">
+                    <span class="text-lg mt-0.5">💡</span>
+                    <p class="m-0"><strong>هل تبني مهارات مستقلة بدون MCP؟</strong> انتقل مباشرة إلى قسم التخطيط والتصميم — يمكنك العودة هنا لاحقاً.</p>
+                </div>
+
+                <p class="mb-4 text-sm lg:text-base">إن كان لديك بالفعل خادم MCP يعمل، فقد أنجزت الجزء الأصعب. المهارات هي طبقة المعرفة التي تُبنى فوقه — تلتقط سير العمل وأفضل الممارسات التي تعرفها بالفعل، حتى يتمكن كلود من تطبيقها باستمرار.</p>
+
+                <div class="info-box mb-6">
+                    <h4 class="text-base lg:text-lg font-bold mb-2">تشبيه المطبخ</h4>
+                    <ul class="m-0 text-sm lg:text-base text-brand-muted">
+                        <li>يوفّر <strong>MCP</strong> المطبخ الاحترافي: إمكانية الوصول إلى الأدوات والمكونات والمعدات.</li>
+                        <li>توفّر <strong>المهارات</strong> الوصفات: تعليمات خطوة بخطوة حول كيفية إنشاء شيء ذي قيمة.</li>
+                    </ul>
+                    <p class="mt-3 mb-0 text-brand-text text-sm lg:text-base">معاً، يُمكِّنان المستخدمين من إنجاز مهام معقدة دون الحاجة إلى فهم كل خطوة بأنفسهم.</p>
+                </div>
+
+                <h4 class="font-bold mb-3 text-sm lg:text-base">كيف يعملان معاً:</h4>
+                <div class="overflow-x-auto mb-6 w-full">
+                    <table class="w-full text-right border-collapse bg-brand-surface rounded-lg overflow-hidden shadow-sm min-w-[500px]">
+                        <thead class="bg-gray-50 border-b border-brand-border">
+                            <tr>
+                                <th class="p-3 font-bold text-gray-700 w-1/2">MCP (الاتصال)</th>
+                                <th class="p-3 font-bold text-gray-700 w-1/2">المهارات (المعرفة)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-brand-border text-xs md:text-sm">
+                            <tr>
+                                <td class="p-3">يربط كلود بخدمتك (Notion، Asana، Linear... إلخ)</td>
+                                <td class="p-3">يعلّم كلود كيف يستخدم خدمتك بفعالية</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3">يوفر وصولاً فورياً للبيانات وتشغيل الأدوات</td>
+                                <td class="p-3">يحتوي سير العمل وأفضل الممارسات</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-brand-accent">ما الذي يستطيع كلود فعله</td>
+                                <td class="p-3 font-medium text-brand-accent">كيف ينبغي لكلود أن يفعله</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 class="font-bold mb-3 text-lg">لماذا يهمّ هذا لمستخدمي MCP؟</h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="example-bad m-0">
+                        <h5 class="font-bold mb-2 text-red-800 border-b border-red-200 pb-2 text-sm lg:text-base">بدون مهارات:</h5>
+                        <ul class="text-xs lg:text-sm text-red-900 m-0">
+                            <li>يربط المستخدمون خادم MCP الخاص بك لكنهم لا يعرفون ماذا يفعلون بعد ذلك</li>
+                            <li>تذاكر دعم تتساءل "كيف أفعل X مع تكاملك؟"</li>
+                            <li>كل محادثة تبدأ من الصفر</li>
+                            <li>نتائج غير متسقة</li>
+                            <li>يُحمِّل المستخدمون خطأً للموصِّل بينما المشكلة غياب إرشادات</li>
+                        </ul>
+                    </div>
+                    <div class="example-good m-0">
+                        <h5 class="font-bold mb-2 text-green-800 border-b border-green-200 pb-2 text-sm lg:text-base">مع المهارات:</h5>
+                        <ul class="text-xs lg:text-sm text-green-900 m-0">
+                            <li>سير عمل جاهزة تُفعَّل تلقائياً عند الحاجة</li>
+                            <li>استخدام متسق وموثوق للأدوات</li>
+                            <li>أفضل الممارسات مُضمَّنة في كل تفاعل</li>
+                            <li>منحنى تعلُّم أقل حدة لتكاملك</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- الفصل الثاني -->
+        <section id="chapter-2" class="mb-16 scroll-mt-20">
+            <p class="text-brand-accent font-medium mb-1 text-sm">الفصل الثاني</p>
+            <h2 class="text-2xl lg:text-3xl font-bold mb-6">التخطيط والتصميم</h2>
+            
+            <h3 class="text-xl lg:text-2xl font-bold mb-3">ابدأ بحالات الاستخدام</h3>
+            <p class="mb-4 text-sm lg:text-base">قبل كتابة أي كود، حدِّد 2 إلى 3 حالات استخدام ملموسة ينبغي أن تُتيحها مهارتك.</p>
+
+            <div class="bilingual-block">
+                <h4 class="font-bold mb-3 text-sm lg:text-base border-b pb-2">مثال على تعريف حالة استخدام جيدة</h4>
+                
+                <div class="mb-4">
+                    <p class="font-bold text-sm mb-2">العربية:</p>
+                    <div dir="rtl" class="text-xs lg:text-sm space-y-2 pr-2 border-r-2 border-brand-accent">
+                        <p><strong>حالة الاستخدام:</strong> تخطيط سبرينت المشروع</p>
+                        <p><strong>المحفِّز:</strong> يقول المستخدم "ساعدني في تخطيط هذا السبرينت" أو "أنشئ مهام السبرينت"</p>
+                        <div>
+                            <strong>الخطوات:</strong>
+                            <ol class="mt-1 mb-0 ps-6">
+                                <li>جلب حالة المشروع الحالية من Linear (عبر MCP)</li>
+                                <li>تحليل سرعة الفريق وطاقته الاستيعابية</li>
+                                <li>اقتراح أولويات المهام</li>
+                                <li>إنشاء مهام في Linear مع التسميات والتقديرات المناسبة</li>
+                            </ol>
+                        </div>
+                        <p><strong>النتيجة:</strong> سبرينت مُخطَّط بالكامل مع مهام منشأة</p>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <p class="font-bold text-sm mb-2 text-gray-500">English (Original):</p>
+                    <div dir="ltr" class="text-xs lg:text-sm text-gray-500 space-y-2 pl-2 border-l-2 border-gray-300 text-left">
+                        <p><strong>Use Case:</strong> Project Sprint Planning</p>
+                        <p><strong>Trigger:</strong> User says "Help me plan this sprint" or "create sprint tasks"</p>
+                        <div>
+                            <strong>Steps:</strong>
+                            <ol class="mt-1 mb-0 pl-6 list-decimal">
+                                <li>Fetch current project state from Linear (via MCP)</li>
+                                <li>Analyze team velocity and capacity</li>
+                                <li>Suggest task priorities</li>
+                                <li>Create tasks in Linear with proper labels and estimates</li>
+                            </ol>
+                        </div>
+                        <p><strong>Outcome:</strong> Fully planned sprint with generated tasks</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-5 rounded-lg mb-8 border border-gray-200">
+                <h4 class="font-bold mb-2 text-sm lg:text-base">اسأل نفسك:</h4>
+                <ul class="m-0 text-sm lg:text-base text-brand-muted">
+                    <li>ما الذي يريد المستخدم تحقيقه؟</li>
+                    <li>ما سير العمل المتعددة الخطوات التي يتطلبها ذلك؟</li>
+                    <li>ما الأدوات المطلوبة (مدمجة أم MCP)؟</li>
+                    <li>ما المعرفة المتخصصة وأفضل الممارسات التي ينبغي تضمينها؟</li>
+                </ul>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">فئات حالات الاستخدام الشائعة</h3>
+            <p class="mb-4 text-sm lg:text-base">في Anthropic رصدنا ثلاث فئات شائعة من حالات الاستخدام:</p>
+
+            <div class="space-y-6 mb-8">
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-brand-border">
+                    <h4 class="text-lg lg:text-xl font-bold text-brand-accent mb-3">الفئة الأولى: إنشاء الوثائق والأصول</h4>
+                    <p class="mb-2 text-sm lg:text-base"><strong>تُستخدم لـ:</strong> إنشاء مخرجات متسقة وعالية الجودة تشمل الوثائق والعروض التقديمية والتطبيقات والتصاميم والأكواد وغيرها.</p>
+                    <div class="text-xs lg:text-sm text-gray-600 bg-gray-50 p-3 rounded mb-3">
+                        <strong>مثال واقعي:</strong> مهارة frontend-design.<br>
+                        <span dir="rtl" class="block mt-1">"أنشئ واجهات أمامية متميزة وجاهزة للإنتاج بجودة تصميمية عالية. تُستخدم عند بناء مكوّنات ويب أو صفحات أو نماذج أو ملصقات أو تطبيقات."</span>
+                        <span dir="ltr" class="block mt-2 text-gray-400 text-left">"Create premium, production-ready frontend designs with high design quality. Use when building web components, pages, forms, posters, or applications."</span>
+                    </div>
+                    <p class="font-bold mb-1 text-sm lg:text-base">التقنيات الأساسية:</p>
+                    <ul class="text-xs lg:text-sm m-0">
+                        <li>أدلة أسلوب ومعايير علامة تجارية مُضمَّنة</li>
+                        <li>هياكل قوالب لمخرجات متسقة</li>
+                        <li>لا تتطلب أدوات خارجية — تعتمد على القدرات المدمجة</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-brand-border">
+                    <h4 class="text-lg lg:text-xl font-bold text-brand-accent mb-3">الفئة الثانية: أتمتة سير العمل</h4>
+                    <p class="mb-2 text-sm lg:text-base"><strong>تُستخدم لـ:</strong> العمليات المتعددة الخطوات التي تستفيد من منهجية ثابتة، بما فيها التنسيق عبر خوادم MCP متعددة.</p>
+                    <div class="text-xs lg:text-sm text-gray-600 bg-gray-50 p-3 rounded mb-3">
+                        <strong>مثال واقعي:</strong> مهارة skill-creator.<br>
+                        <span dir="rtl" class="block mt-1">"دليل تفاعلي لإنشاء مهارات جديدة. يُرشد المستخدم خلال تعريف حالة الاستخدام وتوليد المقدمة وكتابة التعليمات والتحقق منها."</span>
+                        <span dir="ltr" class="block mt-2 text-gray-400 text-left">"Interactive guide to create new skills. Guides user through defining use cases, generating frontmatter, writing instructions, and validation."</span>
+                    </div>
+                    <p class="font-bold mb-1 text-sm lg:text-base">التقنيات الأساسية:</p>
+                    <ul class="text-xs lg:text-sm m-0">
+                        <li>سير عمل خطوة بخطوة مع بوابات تحقق</li>
+                        <li>حلقات تحسين تكرارية واقتراحات مدمجة</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-brand-border">
+                    <h4 class="text-lg lg:text-xl font-bold text-brand-accent mb-3">الفئة الثالثة: تعزيز MCP</h4>
+                    <p class="mb-2 text-sm lg:text-base"><strong>تُستخدم لـ:</strong> توجيه سير العمل لتعزيز وصول الأدوات الذي يوفره خادم MCP.</p>
+                    <div class="text-xs lg:text-sm text-gray-600 bg-gray-50 p-3 rounded mb-3">
+                        <strong>مثال واقعي:</strong> مهارة sentry-code-review.<br>
+                        <span dir="rtl" class="block mt-1">"تحلل تلقائياً الأخطاء وتُصلحها في طلبات السحب (PRs) على GitHub باستخدام بيانات مراقبة الأخطاء من Sentry عبر خادم MCP الخاص بهم."</span>
+                        <span dir="ltr" class="block mt-2 text-gray-400 text-left">"Automatically analyze and fix errors in GitHub Pull Requests using error monitoring data from Sentry via their MCP server."</span>
+                    </div>
+                    <p class="font-bold mb-1 text-sm lg:text-base">التقنيات الأساسية:</p>
+                    <ul class="text-xs lg:text-sm m-0">
+                        <li>تنسيق استدعاءات MCP المتعددة بالتسلسل</li>
+                        <li>تضمين خبرة متخصصة في المجال لتوفير السياق</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">تحديد معايير النجاح</h3>
+            <p class="mb-6 text-sm lg:text-base">كيف ستعرف أن مهارتك تعمل بشكل صحيح؟ هذه أهداف طموحة.</p>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-10">
+                <div>
+                    <h4 class="font-bold text-base lg:text-lg mb-3 text-blue-800">مقاييس كمية:</h4>
+                    <ul class="space-y-3 text-xs lg:text-sm">
+                        <li>
+                            <strong>تُفعَّل المهارة في 90% من الاستعلامات ذات الصلة</strong><br>
+                            <span class="text-gray-600">طريقة القياس: شغِّل 10 إلى 20 استعلاماً اختبارياً، تتبَّع التحميل التلقائي.</span>
+                        </li>
+                        <li>
+                            <strong>اكتمال سير العمل في عدد X من استدعاءات الأدوات</strong><br>
+                            <span class="text-gray-600">طريقة القياس: قارن عدد الاستدعاءات والرموز المستهلكة مع/بدون المهارة.</span>
+                        </li>
+                        <li>
+                            <strong>صفر استدعاءات API فاشلة</strong><br>
+                            <span class="text-gray-600">طريقة القياس: راقب سجلات الخادم ومعدلات إعادة المحاولة.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-base lg:text-lg mb-3 text-purple-800">مقاييس نوعية:</h4>
+                    <ul class="space-y-3 text-xs lg:text-sm">
+                        <li>
+                            <strong>لا يحتاج المستخدمون لتوجيه كلود</strong><br>
+                            <span class="text-gray-600">طريقة التقييم: لاحظ كم مرة تحتاج للتوضيح أثناء الاختبار.</span>
+                        </li>
+                        <li>
+                            <strong>تكتمل سير العمل دون تصحيح</strong><br>
+                            <span class="text-gray-600">طريقة التقييم: قارن جودة واتساق المخرجات في 3-5 محاولات.</span>
+                        </li>
+                        <li>
+                            <strong>نتائج متسقة عبر الجلسات</strong><br>
+                            <span class="text-gray-600">طريقة التقييم: إنجاز المهمة من المحاولة الأولى لمستخدم جديد.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4 pt-8 border-t border-brand-border">المتطلبات التقنية</h3>
+            
+            <h4 class="text-lg font-bold mb-3">بنية الملفات</h4>
+            <div class="bilingual-block">
+                <p class="font-bold text-sm mb-2">العربية:</p>
+<pre dir="ltr" class="mb-4"><code>your-skill-name/
+├── SKILL.md              <span dir="rtl"># مطلوب - ملف المهارة الرئيسي</span>
+├── scripts/              <span dir="rtl"># اختياري - أكواد قابلة للتنفيذ</span>
+│   ├── process_data.py   <span dir="rtl"># مثال</span>
+│   └── validate.sh       <span dir="rtl"># مثال</span>
+├── references/           <span dir="rtl"># اختياري - توثيق</span>
+│   ├── api-guide.md      <span dir="rtl"># مثال</span>
+│   └── examples/         <span dir="rtl"># مثال</span>
+└── assets/               <span dir="rtl"># اختياري - قوالب وغيرها</span>
+    └── report-template.md <span dir="rtl"># مثال</span></code></pre>
+                <div class="pt-4 border-t border-gray-100">
+                    <p class="font-bold text-sm mb-2 text-gray-500">English (Original):</p>
+<pre dir="ltr" class="text-gray-400 bg-gray-900 border-gray-700 m-0"><code>your-skill-name/
+├── SKILL.md              # REQUIRED - main skill file
+├── scripts/              # Optional - executable code
+│   ├── process_data.py   # example
+│   └── validate.sh       # example
+├── references/           # Optional - documentation
+│   ├── api-guide.md      # example
+│   └── examples/         # example
+└── assets/               # Optional - templates etc
+    └── report-template.md # example</code></pre>
+                </div>
+            </div>
+
+            <h4 class="text-lg font-bold mt-8 mb-3">القواعد الجوهرية</h4>
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-white p-4 rounded border border-gray-200">
+                    <h5 class="font-bold mb-2 text-sm lg:text-base">تسمية SKILL.md:</h5>
+                    <ul class="text-xs lg:text-sm m-0 pl-4">
+                        <li>يجب أن يكون <code dir="ltr">SKILL.md</code> بالضبط (حساس لحالة الأحرف)</li>
+                        <li>لا تُقبَل أي صيغة أخرى</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded border border-gray-200">
+                    <h5 class="font-bold mb-2 text-sm lg:text-base">تسمية مجلد المهارة:</h5>
+                    <ul class="text-xs lg:text-sm m-0 pl-4">
+                        <li>استخدم kebab-case: <code dir="ltr">notion-setup</code> ✅</li>
+                        <li>لا مسافات أو شرطات سفلية ❌</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded border border-gray-200">
+                    <h5 class="font-bold mb-2 text-sm lg:text-base">لا تُدرج README.md:</h5>
+                    <ul class="text-xs lg:text-sm m-0 pl-4">
+                        <li>لا تضعه داخل مجلد المهارة</li>
+                        <li>يذهب كل التوثيق لـ <code dir="ltr">SKILL.md</code> أو <code dir="ltr">references/</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">مقدمة YAML: الجزء الأهم</h3>
+            <p class="mb-4 text-sm lg:text-base">مقدمة YAML هي الطريقة التي يقرر بها كلود ما إذا كان سيُحمِّل مهارتك أم لا.</p>
+            
+            <h4 class="font-bold mt-4 mb-2 text-sm lg:text-base">الصيغة المطلوبة كحد أدنى</h4>
+            <div class="bilingual-block">
+                <p class="font-bold text-sm mb-2">العربية:</p>
+<pre dir="rtl" class="mb-4"><code>---
+name: your-skill-name
+description: ما تفعله المهارة. استخدم عندما يطلب المستخدم [عبارات محددة].
+---</code></pre>
+                <div class="pt-4 border-t border-gray-100">
+                    <p class="font-bold text-sm mb-2 text-gray-500">English (Original):</p>
+<pre dir="ltr" class="text-gray-400 bg-gray-900 border-gray-700 m-0"><code>---
+name: your-skill-name
+description: What the skill does. Use when the user asks for [specific phrases].
+---</code></pre>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8 mt-6">
+                <div>
+                    <h4 class="font-bold mb-3 text-sm lg:text-base">متطلبات الحقول</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="font-bold bg-gray-100 px-2 py-1 rounded text-xs lg:text-sm">name (الاسم) — مطلوب:</span>
+                            <ul class="text-xs lg:text-sm mt-1 pl-4">
+                                <li>kebab-case فقط، يجب أن يتطابق مع المجلد</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <span class="font-bold bg-gray-100 px-2 py-1 rounded text-xs lg:text-sm">description (الوصف) — مطلوب:</span>
+                            <ul class="text-xs lg:text-sm mt-1 pl-4">
+                                <li>ماذا تفعل ومتى تُستخدم. أقل من 1024 حرفاً</li>
+                                <li>لا علامات XML (<code dir="ltr">&lt;</code> أو <code dir="ltr">&gt;</code>)</li>
+                                <li>أدرج عبارات المستخدم وأنواع الملفات</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 text-sm lg:text-base">الحقول الاختيارية</h4>
+                    <div class="space-y-2 text-xs lg:text-sm">
+                        <p><strong>license (الترخيص):</strong> للمصادر المفتوحة. (مثال MIT)</p>
+                        <p><strong>compatibility (التوافق):</strong> متطلبات البيئة، الحزم.</p>
+                        <p><strong>metadata (البيانات الوصفية):</strong> مفاتيح مخصصة.</p>
+<pre dir="ltr" class="my-2 p-3 text-xs"><code>metadata:
+  author: ProjectHub
+  version: 1.0.0
+  mcp-server: projecthub</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-bad">
+                <h4 class="font-bold mb-2 text-red-800 text-sm lg:text-base">قيود الأمان - المحظور في مقدمة YAML:</h4>
+                <ul class="text-xs lg:text-sm text-red-900 m-0 pl-4">
+                    <li>الأقواس الزاوية لـ XML (<code dir="ltr">&lt;</code> أو <code dir="ltr">&gt;</code>)</li>
+                    <li>مهارات تحمل كلمة "claude" أو "anthropic" في الاسم</li>
+                </ul>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4 pt-8 border-t border-brand-border">كتابة مهارات فعّالة</h3>
+            
+            <h4 class="font-bold text-lg mb-3">حقل الوصف (description)</h4>
+            <p class="font-medium bg-gray-50 p-3 rounded border border-gray-200 mb-6 text-center text-sm lg:text-base">
+                الهيكل المقترح: <br>
+                <span class="text-brand-accent">[ما تفعله]</span> + <span class="text-brand-accent">[متى تُستخدم]</span> + <span class="text-brand-accent">[القدرات الرئيسية]</span>
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-8">
+                <div class="example-good m-0">
+                    <h5 class="font-bold mb-3 text-green-800 text-sm lg:text-base">أمثلة جيدة:</h5>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-xs font-bold mb-1">العربية:</p>
+<pre dir="rtl" class="text-xs m-0 bg-green-900/10 text-green-900 border-none p-2"><code>description: يحلل ملفات تصميم Figma ويولد توثيق تسليم للمطورين.
+  استخدم عندما يرفع المستخدم ملفات .fig، أو يطلب "مواصفات التصميم"
+  أو "تسليم التصميم للكود".</code></pre>
+                            <p class="text-[10px] font-bold mt-2 mb-1 text-gray-500">English:</p>
+<pre dir="ltr" class="text-[10px] m-0 bg-gray-100 text-gray-600 border-none p-2"><code>description: Analyzes Figma design files and generates developer handoff documentation.
+  Use when the user uploads .fig files, or asks for "design specs"
+  or "design to code handoff".</code></pre>
+                        </div>
+                        <hr class="border-green-200">
+                        <div>
+                            <p class="text-xs font-bold mb-1">العربية:</p>
+<pre dir="rtl" class="text-xs m-0 bg-green-900/10 text-green-900 border-none p-2"><code>description: سير عمل متكامل لإعداد عملاء PayFlow. استخدم عندما يقول
+  المستخدم "تأهيل عميل جديد" أو "إعداد اشتراك".</code></pre>
+                            <p class="text-[10px] font-bold mt-2 mb-1 text-gray-500">English:</p>
+<pre dir="ltr" class="text-[10px] m-0 bg-gray-100 text-gray-600 border-none p-2"><code>description: End-to-end workflow for PayFlow customer onboarding. Use when
+  the user says "onboard new customer" or "setup subscription".</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example-bad m-0">
+                    <h5 class="font-bold mb-3 text-red-800 text-sm lg:text-base">أمثلة سيئة:</h5>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-xs font-bold mb-1">العربية:</p>
+<pre dir="rtl" class="text-xs m-0 bg-red-900/10 text-red-900 border-none p-2"><code># مبهم جداً
+description: يساعد في المشاريع.</code></pre>
+                            <p class="text-[10px] font-bold mt-2 mb-1 text-gray-500">English:</p>
+<pre dir="ltr" class="text-[10px] m-0 bg-gray-100 text-gray-600 border-none p-2"><code># Too vague
+description: Helps with projects.</code></pre>
+                        </div>
+                        <hr class="border-red-200">
+                        <div>
+                            <p class="text-xs font-bold mb-1">العربية:</p>
+<pre dir="rtl" class="text-xs m-0 bg-red-900/10 text-red-900 border-none p-2"><code># لا يتضمن مُحفِّزات
+description: ينشئ أنظمة توثيق متعددة الصفحات.</code></pre>
+                            <p class="text-[10px] font-bold mt-2 mb-1 text-gray-500">English:</p>
+<pre dir="ltr" class="text-[10px] m-0 bg-gray-100 text-gray-600 border-none p-2"><code># No triggers included
+description: Creates multi-page documentation systems.</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="font-bold text-lg mb-3">كتابة التعليمات الرئيسية</h4>
+            <p class="mb-3 text-sm lg:text-base">بعد المقدمة، اكتب التعليمات بصيغة Markdown.</p>
+            
+            <div class="bilingual-block">
+                <p class="font-bold text-sm mb-2">العربية:</p>
+<pre dir="rtl" class="mb-4"><code>---
+name: your-skill
+description: [...]
+---
+# اسم مهارتك
+
+## التعليمات
+### الخطوة 1: [أول خطوة رئيسية]
+شرح واضح لما يحدث.
+مثال:
+<span dir="ltr" style="display:block; text-align:left;">```bash
+python scripts/fetch_data.py --project-id PROJECT_ID
+```</span>
+المخرج المتوقع: [صف كيف يبدو النجاح]
+
+## الأمثلة
+مثال 1: [سيناريو شائع]
+يقول المستخدم: "أنشئ حملة تسويقية جديدة"
+الإجراءات: 1. جلب الحملات، 2. إنشاء حملة.
+
+## استكشاف الأخطاء
+الخطأ: [رسالة الخطأ]
+السبب: [السبب]
+الحل: [الإصلاح]</code></pre>
+                
+                <div class="pt-4 border-t border-gray-100">
+                    <p class="font-bold text-sm mb-2 text-gray-500">English (Original):</p>
+<pre dir="ltr" class="text-gray-400 bg-gray-900 border-gray-700 m-0"><code>---
+name: your-skill
+description: [...]
+---
+# Your Skill Name
+
+## Instructions
+### Step 1: [First Major Step]
+Clear explanation of what happens.
+Example:
+```bash
+python scripts/fetch_data.py --project-id PROJECT_ID
+```
+Expected Output: [describe success]
+
+## Examples
+Example 1: [Common Scenario]
+User says: "Create a new marketing campaign"
+Actions: 1. Fetch campaigns, 2. Create campaign.
+
+## Troubleshooting
+Error: [Common error message]
+Cause: [Why it happens]
+Solution: [How to fix]</code></pre>
+                </div>
+            </div>
+
+            <h4 class="font-bold text-lg mt-8 mb-4">أفضل الممارسات في كتابة التعليمات</h4>
+            
+            <div class="space-y-6">
+                <div>
+                    <h5 class="font-bold bg-gray-100 p-2 rounded mb-3 text-sm lg:text-base">1. الوضوح والقابلية للتنفيذ</h5>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="example-good m-0 p-4">
+                            <p class="font-bold text-green-800 mb-2 text-sm">✅ جيد:</p>
+                            <p class="text-xs lg:text-sm m-0">شغِّل <code dir="ltr">python scripts/validate.py --input {filename}</code> للتحقق. إن فشل، تشمل المشاكل:</p>
+                            <ul class="text-xs lg:text-sm m-0 mt-2 pl-4">
+                                <li>حقول مطلوبة مفقودة (أضفها إلى ملف CSV)</li>
+                                <li>تنسيقات تاريخ غير صحيحة (استخدم YYYY-MM-DD)</li>
+                            </ul>
+                            <div class="mt-4 pt-3 border-t border-green-200">
+                                <p class="text-[10px] text-green-700 italic m-0">Run `python scripts/validate.py --input {filename}` to check data formatting. If validation fails, common issues include: Missing required fields... Incorrect date formats...</p>
+                            </div>
+                        </div>
+                        <div class="example-bad m-0 p-4">
+                            <p class="font-bold text-red-800 mb-2 text-sm">❌ سيئ:</p>
+                            <p class="text-xs lg:text-sm m-0">تحقق من البيانات قبل المتابعة.</p>
+                            <div class="mt-4 pt-3 border-t border-red-200">
+                                <p class="text-[10px] text-red-700 italic m-0">Check data before proceeding.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="font-bold bg-gray-100 p-2 rounded mb-3 text-sm lg:text-base">2. تضمين معالجة الأخطاء</h5>
+                    <div class="bilingual-block p-4 m-0">
+<pre dir="rtl" class="m-0 mb-3 text-xs lg:text-sm"><code>## المشاكل الشائعة
+### فشل اتصال MCP
+إن ظهرت رسالة "Connection refused":
+1. تحقق من تشغيل خادم MCP: الإعدادات > الإضافات
+2. تأكد من صلاحية مفتاح API</code></pre>
+<pre dir="ltr" class="m-0 text-[10px] lg:text-xs text-gray-400 bg-gray-900 border-none"><code>## Common Issues
+### MCP Connection Failure
+If you see "Connection refused":
+1. Check MCP server is running: Settings > Extensions
+2. Ensure API key is valid</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- الفصل الثالث -->
+        <section id="chapter-3" class="mb-16 scroll-mt-20">
+            <p class="text-brand-accent font-medium mb-1 text-sm">الفصل الثالث</p>
+            <h2 class="text-2xl lg:text-3xl font-bold mb-6">الاختبار والتطوير التكراري</h2>
+            
+            <p class="mb-4 text-sm lg:text-base">يمكن اختبار المهارات بمستويات متفاوتة من الدقة:</p>
+            <ul class="mb-6 space-y-2 text-sm lg:text-base">
+                <li><strong>الاختبار اليدوي في Claude.ai:</strong> تشغيل مباشر.</li>
+                <li><strong>الاختبار البرمجي في Claude Code:</strong> أتمتة حالات الاختبار.</li>
+                <li><strong>الاختبار الآلي عبر Skills API:</strong> تقييم منهجي شامل.</li>
+            </ul>
+
+            <div class="bg-blue-50 border border-blue-200 text-blue-900 p-4 rounded-lg mb-8 text-sm lg:text-base">
+                <p class="font-bold mb-1">نصيحة احترافية: كرِّر على مهمة واحدة قبل التوسع</p>
+                <p class="m-0 text-xs lg:text-sm">كرِّر على مهمة صعبة واحدة حتى ينجح كلود فيها، ثم استخلص المقاربة في مهارة. هذا يوفر إشارة أسرع من الاختبار الواسع.</p>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-6">مقاربة الاختبار الموصى بها</h3>
+
+            <div class="space-y-6 mb-8">
+                <div class="border border-brand-border p-5 rounded-lg bg-white">
+                    <h4 class="text-lg font-bold mb-3 text-brand-accent">١. اختبارات التفعيل</h4>
+                    <div class="bilingual-block m-0 p-4">
+                        <p class="text-xs font-bold mb-2">العربية:</p>
+<pre dir="rtl" class="text-xs m-0 bg-gray-50 text-gray-800 border-gray-200 p-3"><code>يجب أن تُفعَّل:
+- "ساعدني في إعداد مساحة عمل ProjectHub جديدة"
+- "هيّئ مشروع ProjectHub لتخطيط الربع الرابع"
+يجب ألا تُفعَّل:
+- "ما طقس سان فرانسيسكو؟"</code></pre>
+                        <div class="pt-3 mt-3 border-t border-gray-100">
+                            <p class="text-[10px] font-bold mb-2 text-gray-500">English:</p>
+<pre dir="ltr" class="text-[10px] m-0 bg-gray-100 text-gray-600 border-none p-3"><code>Should trigger:
+- "Help me setup a new ProjectHub workspace"
+- "Initialize ProjectHub project for Q4 planning"
+Should NOT trigger:
+- "What's the weather in SF?"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-brand-border p-5 rounded-lg bg-white">
+                    <h4 class="text-lg font-bold mb-3 text-brand-accent">٢. مقارنة الأداء (خط الأساس)</h4>
+                    <div class="grid md:grid-cols-2 gap-4 text-xs lg:text-sm">
+                        <div class="example-bad m-0 p-3">
+                            <p class="font-bold mb-2 text-red-800">بدون مهارة:</p>
+                            <ul class="m-0 pl-4 text-red-900">
+                                <li>15 رسالة ذهاباً وإياباً</li>
+                                <li>3 استدعاءات API فاشلة</li>
+                            </ul>
+                        </div>
+                        <div class="example-good m-0 p-3">
+                            <p class="font-bold mb-2 text-green-800">مع المهارة:</p>
+                            <ul class="m-0 pl-4 text-green-900">
+                                <li>سؤالان استيضاحيان فقط</li>
+                                <li>0 استدعاءات فاشلة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4 pt-6 border-t border-brand-border">استخدام مهارة skill-creator</h3>
+            <p class="mb-4 text-sm lg:text-base">مدمجة في Claude.ai وتساعدك في بناء المهارات وتطويرها في 15 إلى 30 دقيقة.</p>
+
+            <div class="grid md:grid-cols-3 gap-3 mb-6">
+                <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                    <h4 class="font-bold mb-2 text-brand-accent text-sm">إنشاء المهارات:</h4>
+                    <ul class="text-xs m-0 pl-4">
+                        <li>توليد المهارات من الوصف</li>
+                        <li>إنتاج ملف SKILL.md</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                    <h4 class="font-bold mb-2 text-brand-accent text-sm">المراجعة:</h4>
+                    <ul class="text-xs m-0 pl-4">
+                        <li>تحديد المشاكل ومخاطر التفعيل</li>
+                        <li>اقتراح حالات اختبار</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                    <h4 class="font-bold mb-2 text-brand-accent text-sm">التطوير التكراري:</h4>
+                    <p class="text-xs m-0">إعادة إدخال الحالات الحدية للتحسين.</p>
+                </div>
+            </div>
+
+            <div class="bilingual-block p-4 mb-8">
+                <p class="mb-2 font-bold text-sm">للاستخدام (Prompt):</p>
+<pre dir="rtl" class="m-0 p-2 text-sm bg-gray-100 text-gray-800 border-gray-300"><code>"استخدم مهارة skill-creator لمساعدتي في بناء مهارة لـ [حالة استخدامك]"</code></pre>
+                <div class="pt-3 mt-3 border-t border-gray-200">
+<pre dir="ltr" class="m-0 p-2 text-xs bg-gray-50 text-gray-500 border-none"><code>"Use the skill-creator skill to help me build a skill for [your use case]"</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">التطوير بناءً على الملاحظات</h3>
+            <div class="space-y-4 mb-8">
+                <div class="border-l-4 border-yellow-400 pl-4 py-2">
+                    <h4 class="font-bold text-base lg:text-lg">التفعيل القاصر (Undertriggering):</h4>
+                    <p class="text-xs lg:text-sm text-gray-600 mb-1">المهارة لا تُحمَّل.</p>
+                    <p class="text-xs lg:text-sm font-bold text-brand-text mb-0">الحل: أضف مزيداً من التفاصيل والدقة لحقل الوصف.</p>
+                </div>
+                <div class="border-l-4 border-red-400 pl-4 py-2">
+                    <h4 class="font-bold text-base lg:text-lg">التفعيل المفرط (Overtriggering):</h4>
+                    <p class="text-xs lg:text-sm text-gray-600 mb-1">تُحمَّل لاستعلامات غير صلة.</p>
+                    <p class="text-xs lg:text-sm font-bold text-brand-text mb-0">الحل: أضف مُحفِّزات سلبية وكن محدداً.</p>
+                </div>
+                <div class="border-l-4 border-blue-400 pl-4 py-2">
+                    <h4 class="font-bold text-base lg:text-lg">مشاكل التنفيذ:</h4>
+                    <p class="text-xs lg:text-sm text-gray-600 mb-1">نتائج غير متسقة أو إخفاقات.</p>
+                    <p class="text-xs lg:text-sm font-bold text-brand-text mb-0">الحل: حسِّن التعليمات وأضف معالجة الأخطاء.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- الفصل الرابع -->
+        <section id="chapter-4" class="mb-16 scroll-mt-20">
+            <p class="text-brand-accent font-medium mb-1 text-sm">الفصل الرابع</p>
+            <h2 class="text-2xl lg:text-3xl font-bold mb-6">التوزيع والمشاركة</h2>
+            
+            <p class="mb-6 text-sm lg:text-base">تجعل المهارات تكامل MCP الخاص بك أكثر اكتمالاً، مقدمة قيمة مضافة أسرع من الـ MCP وحده.</p>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-5 rounded-lg border border-brand-border">
+                    <h3 class="text-lg font-bold mb-3">نموذج التوزيع الحالي <span class="text-xs font-normal text-gray-500">(يناير 2026)</span></h3>
+                    <ul class="text-xs lg:text-sm m-0 pl-4 text-brand-muted space-y-1">
+                        <li>تنزيل المجلد أو ملف .zip</li>
+                        <li>رفعه عبر: الإعدادات > القدرات > المهارات</li>
+                        <li>للمؤسسات: نشر مركزي من قبل المسؤولين</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-brand-border">
+                    <h3 class="text-lg font-bold mb-3">استخدام المهارات عبر API</h3>
+                    <ul class="text-xs lg:text-sm m-0 pl-4 text-brand-muted space-y-1">
+                        <li>نقطة نهاية <code dir="ltr">/v1/skills</code></li>
+                        <li>التحكم في الإصدارات عبر Console</li>
+                        <li>أتمتة الأنظمة وتطبيقات الوكلاء (Agents)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4">المقاربة الموصى بها اليوم</h3>
+            <p class="mb-4 text-sm lg:text-base">استضف المهارة على GitHub، أضف روابط في توثيق MCP، وقدم دليل تثبيت واضح.</p>
+
+            <div class="bilingual-block">
+                <p class="font-bold text-sm mb-2">إنشاء دليل التثبيت (العربية):</p>
+<pre dir="rtl" class="m-0 p-3 text-xs"><code>## تثبيت مهارة [خدمتك]
+1. تنزيل المهارة: استنساخ المستودع
+2. التثبيت في Claude: الإعدادات > المهارات > رفع مهارة
+3. تفعيل المهارة وتأكيد اتصال MCP
+4. الاختبار: اسأل كلود "أعدّ مشروعاً جديداً"</code></pre>
+                <div class="pt-4 mt-4 border-t border-gray-100">
+                    <p class="font-bold text-sm mb-2 text-gray-500">English (Original):</p>
+<pre dir="ltr" class="m-0 p-3 text-[10px] text-gray-400 bg-gray-900 border-none"><code>## Installing [Your Service] Skill
+1. Download the skill: Clone the repository
+2. Install in Claude: Settings > Skills > Upload Skill
+3. Enable the skill and verify MCP connection
+4. Test it: Ask Claude "Setup a new project"</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-xl lg:text-2xl font-bold mb-4 mt-8">تسويق مهارتك</h3>
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="example-good m-0">
+                    <p class="font-bold text-green-800 mb-2 text-sm">✅ جيد (ركز على النتائج):</p>
+                    <p class="text-xs lg:text-sm m-0 italic text-gray-700">"تُمكِّن مهارة ProjectHub الفرق من إعداد مساحات عمل كاملة في ثوانٍ بدلاً من قضاء 30 دقيقة في الإعداد اليدوي."</p>
+                </div>
+                <div class="example-bad m-0">
+                    <p class="font-bold text-red-800 mb-2 text-sm">❌ سيئ (ركز على الميزات التقنية):</p>
+                    <p class="text-xs lg:text-sm m-0 italic text-gray-700">"مهارة ProjectHub هي مجلد يحتوي مقدمة YAML وتعليمات Markdown تستدعي أدوات خادم MCP الخاص بنا."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- الفصل الخامس -->
+        <section id="chapter-5" class="mb-16 scroll-mt-20">
+            <p class="text-brand-accent font-medium mb-1 text-sm">الفصل الخامس</p>
+            <h2 class="text-2xl lg:text-3xl font-bold mb-6">الأنماط الشائعة واستكشاف الأخطاء</h2>
+            
+            <p class="mb-6 text-sm lg:text-base">تمثل هذه الأنماط مقاربات شائعة أثبتت فعاليتها.</p>
+
+            <div class="space-y-8 mb-12">
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-xl font-bold mb-2 text-brand-accent">النمط الأول: تنسيق سير العمل المتسلسل</h3>
+                    <p class="mb-3 text-sm text-gray-600"><strong>متى يُستخدم:</strong> لعمليات متعددة الخطوات بترتيب محدد.</p>
+                    <div class="bilingual-block p-4 m-0">
+<pre dir="rtl" class="m-0 text-xs bg-gray-50 text-gray-800 border-gray-200"><code>### الخطوة 1: إنشاء الحساب (استدعاء create_customer)
+### الخطوة 2: إعداد الدفع (انتظر التحقق)
+### الخطوة 3: إنشاء الاشتراك (استدعاء create_subscription)</code></pre>
+                        <div class="pt-3 mt-3 border-t border-gray-200">
+<pre dir="ltr" class="m-0 text-[10px] text-gray-500 bg-gray-100 border-none"><code>### Step 1: Create Account (call create_customer)
+### Step 2: Setup Payment (wait for validation)
+### Step 3: Create Subscription (call create_subscription)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-xl font-bold mb-2 text-brand-accent">النمط الثاني: تنسيق متعدد الـ MCP</h3>
+                    <p class="mb-3 text-sm text-gray-600"><strong>متى يُستخدم:</strong> تمتد سير العمل عبر خدمات متعددة.</p>
+                    <div class="bilingual-block p-4 m-0">
+<pre dir="rtl" class="m-0 text-xs bg-gray-50 text-gray-800 border-gray-200"><code>المرحلة 1: تصدير (Figma MCP) -> المرحلة 2: تخزين (Drive MCP) -> المرحلة 3: تذاكر (Linear MCP)</code></pre>
+                        <div class="pt-3 mt-3 border-t border-gray-200">
+<pre dir="ltr" class="m-0 text-[10px] text-gray-500 bg-gray-100 border-none"><code>Phase 1: Export (Figma MCP) -> Phase 2: Store (Drive MCP) -> Phase 3: Tickets (Linear MCP)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-xl font-bold mb-2 text-brand-accent">النمط الثالث: التحسين التكراري</h3>
+                    <p class="mb-3 text-sm text-gray-600"><strong>متى يُستخدم:</strong> تتحسن جودة المخرجات عبر حلقات فحص متكررة.</p>
+                    <div class="bilingual-block p-4 m-0">
+<pre dir="rtl" class="m-0 text-xs bg-gray-50 text-gray-800 border-gray-200"><code>مسودة أولية -> فحص الجودة (سكريبت) -> حلقة تحسين -> إنهاء</code></pre>
+                        <div class="pt-3 mt-3 border-t border-gray-200">
+<pre dir="ltr" class="m-0 text-[10px] text-gray-500 bg-gray-100 border-none"><code>Initial Draft -> Quality Check (script) -> Iteration Loop -> Finalize</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mb-6 pt-8 border-t border-brand-border text-red-900">استكشاف الأخطاء وإصلاحها</h3>
+            
+            <div class="grid gap-4 lg:gap-6">
+                <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-red-800 text-base mb-2">المشكلة: المهارة لا تُرفع</h4>
+                    <p class="text-xs lg:text-sm mb-1"><strong>السبب:</strong> الملف ليس اسمه <code dir="ltr">SKILL.md</code>، تنسيق YAML غير صالح، أو الاسم ليس kebab-case.</p>
+                </div>
+
+                <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-yellow-800 text-base mb-2">المشكلة: مشاكل التفعيل (لا تُفعل أو تُفعل بكثرة)</h4>
+                    <p class="text-xs lg:text-sm mb-1"><strong>الحل:</strong> راجع حقل الوصف. أضف تفاصيل وعبارات تفعيل إن كانت لا تعمل، أو مُحفِّزات سلبية إن كانت تُفعل في سياق خاطئ.</p>
+                </div>
+
+                <div class="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-orange-800 text-base mb-2">المشكلة: مشاكل اتصال MCP</h4>
+                    <p class="text-xs lg:text-sm mb-1"><strong>الحل:</strong> تحقق من حالة الاتصال بالإضافات، صلاحية المفاتيح، وتطابق أسماء الأدوات في المهارة مع الخادم.</p>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-blue-800 text-base mb-2">المشكلة: التعليمات لا تُتَّبع</h4>
+                    <p class="text-xs lg:text-sm mb-1"><strong>الحل:</strong> اختصر التعليمات، استخدم ترويسة <code dir="ltr">## حرج</code>، وانقل المراجع التفصيلية لملفات منفصلة لتجنب إغراق السياق.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- الفصل السادس -->
+        <section id="chapter-6" class="mb-16 scroll-mt-20">
+            <p class="text-brand-accent font-medium mb-1 text-sm">الفصل السادس</p>
+            <h2 class="text-2xl lg:text-3xl font-bold mb-6">الموارد والمراجع</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-12">
+                <div>
+                    <h3 class="font-bold text-base lg:text-lg mb-3 text-brand-text">التوثيق الرسمي (Anthropic)</h3>
+                    <ul class="space-y-1 text-xs lg:text-sm text-blue-600">
+                        <li>دليل أفضل الممارسات</li>
+                        <li>توثيق المهارات</li>
+                        <li>مرجع API وتوثيق MCP</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base lg:text-lg mb-3 text-brand-text">الأدوات والمرافق</h3>
+                    <p class="text-xs lg:text-sm text-gray-600 mb-2"><strong>مهارة skill-creator:</strong> مدمجة وتُستخدم للتوليد والتحقق.</p>
+                    <p class="text-xs lg:text-sm text-gray-600 mb-0"><strong>الدعم التقني:</strong> Claude Developers Discord أو GitHub Issues.</p>
+                </div>
+            </div>
+
+            <!-- الملاحق -->
+            <div class="space-y-10 border-t border-brand-border pt-10">
+                
+                <div id="appendix-a" class="scroll-mt-20">
+                    <h3 class="text-xl font-bold mb-4 bg-brand-text text-white inline-block px-3 py-1 rounded text-sm lg:text-base">المرجع أ: قائمة التدقيق السريعة</h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-xs lg:text-sm">
+                        <div class="bg-white p-4 border border-brand-border rounded">
+                            <h4 class="font-bold mb-2 border-b pb-1">قبل البدء وأثناء التطوير</h4>
+                            <ul class="space-y-1 list-none pl-0 m-0">
+                                <li>☐ حددت 2-3 حالات استخدام</li>
+                                <li>☐ المجلد مُسمَّى بـ kebab-case</li>
+                                <li>☐ ملف SKILL.md موجود وصحيح</li>
+                                <li>☐ مقدمة YAML صالحة</li>
+                                <li>☐ التعليمات واضحة مع أمثلة</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-4 border border-brand-border rounded">
+                            <h4 class="font-bold mb-2 border-b pb-1">قبل الرفع وبعده</h4>
+                            <ul class="space-y-1 list-none pl-0 m-0">
+                                <li>☐ اختبرت التفعيل في حالات مختلفة</li>
+                                <li>☐ التكامل والأدوات تعمل بنجاح</li>
+                                <li>☐ جمعت الملاحظات من المحادثات الحقيقية</li>
+                                <li>☐ حدثت البيانات الوصفية والإصدار</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="appendix-b" class="scroll-mt-20">
+                    <h3 class="text-xl font-bold mb-4 bg-brand-text text-white inline-block px-3 py-1 rounded text-sm lg:text-base">المرجع ب: مقدمة YAML</h3>
+                    <div class="bilingual-block m-0 p-4">
+<pre dir="ltr" class="m-0 text-xs bg-gray-900 text-gray-300 border-none"><code>---
+name: skill-name-in-kebab-case
+description: What it does and how to use it. Mention specific triggers.
+license: MIT
+allowed-tools: "Bash(python:*) Bash(npm:*) WebFetch"
+metadata:
+  author: Company Name
+  version: 1.0.0
+---</code></pre>
+                    </div>
+                </div>
+
+                <div id="appendix-c" class="scroll-mt-20">
+                    <h3 class="text-xl font-bold mb-3 bg-brand-text text-white inline-block px-3 py-1 rounded text-sm lg:text-base">المرجع ج: أمثلة مهارات كاملة</h3>
+                    <p class="text-xs lg:text-sm mb-3">متوفرة في مستودع <code dir="ltr">anthropics/skills</code>:</p>
+                    <ul class="text-xs lg:text-sm m-0 space-y-1">
+                        <li><strong>مهارات الوثائق:</strong> PDF, DOCX, PPTX</li>
+                        <li><strong>دليل الشركاء:</strong> Asana, Canva, Figma, Sentry</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- سكربت التحكم بالقائمة الجانبية -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('menu-btn');
+            const closeBtn = document.getElementById('close-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const links = document.querySelectorAll('.sidebar-link');
+            const sections = document.querySelectorAll('section, div[id^="appendix"]');
+
+            function toggleMenu() {
+                const isOpen = sidebar.classList.contains('sidebar-open');
+                if (isOpen) {
+                    sidebar.classList.remove('sidebar-open');
+                    sidebar.classList.add('sidebar-closed');
+                    overlay.classList.add('hidden');
+                    document.body.style.overflow = '';
+                } else {
+                    sidebar.classList.remove('sidebar-closed');
+                    sidebar.classList.add('sidebar-open');
+                    overlay.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden'; // منع التمرير في الخلفية
+                }
+            }
+
+            menuBtn.addEventListener('click', toggleMenu);
+            closeBtn.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 1024) toggleMenu();
+                });
+            });
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= (sectionTop - 150)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current) && current !== '') {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
